@@ -99,7 +99,7 @@ print(f"""___経済___
         """)
 print("___記事___")
 for news_item in news_items:
-    print(f"・{news_item["headline"]} ... {news_item["url"]}")
+    print(f"・{news_item["headline"]}..{news_item["url"]}")
 input()
 
 
