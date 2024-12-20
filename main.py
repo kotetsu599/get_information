@@ -45,28 +45,46 @@ for a_tag in soup_prefectures.find_all("a",class_="pref-link"):
         "link":f"https://tenki.jp{a_tag["href"]}"#/forecast/a/b/
     }
     prefectures_links.append(prefecture_link)
-    
-for prefecture_link in prefectures_links:
-    if prefecture_link["pref"] == residence_prefecture:
-        residence_prefecture_url = prefecture_link["link"]
 
-        
-if residence_prefecture_url == "":
+if residence_prefecture != "北海道":
+    for prefecture_link in prefectures_links:
+        if prefecture_link["pref"] == residence_prefecture:
+            residence_prefecture_url = prefecture_link["link"]
+else:
+    Hokkaido_links = []
+    prefectures_for_Hokkaido = ["道央","道北","道東","道南"]
+    for prefecture_for_Hokkaido in prefectures_for_Hokkaido:
+        for prefecture_link in prefectures_links:
+            if prefecture_link["pref"] == prefecture_for_Hokkaido:
+                Hokkaido_links.append(prefecture_link["link"])
+                
+if residence_prefecture_url == "" and residence_prefecture != "北海道":
     input("都道府県が見つかりませんでした。")
     os._exit(0)
+if residence_prefecture != "北海道":
+    r=requests.get(residence_prefecture_url)
+    soup_cities = BeautifulSoup(r.text,"html.parser")
 
-r=requests.get(residence_prefecture_url)
-soup_cities = BeautifulSoup(r.text,"html.parser")
+    for a_tag in soup_cities.find_all("a"):
+        if a_tag.text == residence_city:#だるかった
+            residence_city_url = f"https://tenki.jp{a_tag["href"]}"
+else:
+    for Hokkaido_link in Hokkaido_links:
+        r = requests.get(Hokkaido_link)
+        soup_cities = BeautifulSoup(r.text, "html.parser")
 
-for a_tag in soup_cities.find_all("a"):
-    if a_tag.text == residence_city:#だるかった
-        residence_city_url = f"https://tenki.jp{a_tag["href"]}"    
+        for a_tag in soup_cities.find_all("a"):
+            if a_tag.text == residence_city:
+                residence_city_url = f"https://tenki.jp{a_tag['href']}"
+                break
+        else:
+            continue
+        break
 
 if residence_city_url == "":
     input("市区町村が見つかりませんでした。")
     os._exit(0)
         
-
 r=requests.get(residence_city_url)
 soup_tenki = BeautifulSoup(r.text,"html.parser")
 r=requests.get("https://www.nikkei.com/markets/worldidx/chart/usdjpy/")
@@ -101,5 +119,3 @@ print("___記事___")
 for news_item in news_items:
     print(f"・{news_item["headline"]}..{news_item["url"]}")
 input()
-
-
