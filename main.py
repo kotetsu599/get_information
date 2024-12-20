@@ -10,7 +10,7 @@ def is_prime(num):
     if num%2 == 0 or num%5==0:
         return False
     
-    for i in range(int(num**0.5)):
+    for i in range(int(num**0.5)+1):
         if i != 0 and i != 1:
             if num%i == 0:
                 return False
