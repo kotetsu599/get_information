@@ -3,6 +3,7 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 import os
+import time
 
 def is_prime(num):
     if num == 2:
@@ -57,7 +58,7 @@ else:
         for prefecture_link in prefectures_links:
             if prefecture_link["pref"] == prefecture_for_Hokkaido:
                 Hokkaido_links.append(prefecture_link["link"])
-                
+
 if residence_prefecture_url == "" and residence_prefecture != "北海道":
     input("都道府県が見つかりませんでした。")
     os._exit(0)
@@ -78,6 +79,7 @@ else:
                 residence_city_url = f"https://tenki.jp{a_tag['href']}"
                 break
         else:
+            time.sleep(0.5) #配慮。速度重視なら消してもいいです。
             continue
         break
 
